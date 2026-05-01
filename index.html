@@ -3,79 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HealthAI Pro - Monitor & Predict</title>
+    <meta name="description" content="HealthAI Pro - Advanced Health Monitoring and Prediction Platform">
+    <meta name="keywords" content="health monitoring, AI prediction, medical reports, symptom analysis">
+    <meta name="author" content="HealthAI Pro Team">
+    <title>HealthAI Pro - Monitor & Predict Your Health</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-username.github.io/healthai-pro/">
+    <meta property="og:title" content="HealthAI Pro - Monitor & Predict Your Health">
+    <meta property="og:description" content="Advanced health monitoring platform with AI-powered predictions">
+    <meta property="og:image" content="https://your-username.github.io/healthai-pro/og-image.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://your-username.github.io/healthai-pro/">
+    <meta property="twitter:title" content="HealthAI Pro - Monitor & Predict Your Health">
+    <meta property="twitter:description" content="Advanced health monitoring platform with AI-powered predictions">
+    <meta property="twitter:image" content="https://your-username.github.io/healthai-pro/og-image.png">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        :root {
+            --scrollbar-thumb: #cbd5e1;
+            --scrollbar-hover: #94a3b8;
+            --brand-50: #eff6ff;
+            --brand-100: #dbeafe;
+            --brand-500: #3b82f6;
+            --brand-600: #2563eb;
+            --brand-700: #1d4ed8;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-hover);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
         
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in {
-            animation: fadeIn 0.4s ease-out forwards;
+        
+        .tab-content {
+            display: none;
         }
         
-        /* Hide scrollbar for cleaner look */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Loading animation */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Chart animations */
+        .chart-bar {
+            animation: growBar 1s ease-out forwards;
+        }
+        
+        @keyframes growBar {
+            from { width: 0; }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden">
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-8 rounded-2xl max-w-md w-full mx-4 shadow-xl animate-fade-in">
+            <div class="text-center mb-6">
+                <div class="bg-blue-100 p-3 rounded-full inline-block mb-4">
+                    <i data-lucide="user" class="w-10 h-10 text-blue-600" aria-hidden="true"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900">Welcome to HealthAI Pro</h2>
+                <p class="text-slate-500 mt-2">Please sign in to access your health data</p>
+            </div>
+            
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="user-name" class="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+                    <input type="text" id="user-name" required class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="John Doe">
+                </div>
+                
+                <div>
+                    <label for="user-email" class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                    <input type="email" id="user-email" required class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="john@example.com">
+                </div>
+                
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="log-in" class="w-5 h-5" aria-hidden="true"></i> Sign In
+                </button>
+            </form>
+            
+            <div class="mt-4 text-center">
+                <p class="text-xs text-slate-500">Your data is stored locally in your browser</p>
+            </div>
+        </div>
+    </div>
 
     <!-- Sidebar Navigation (Desktop) -->
-    <aside class="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col relative">
-        <!-- Demo Mode Badge -->
-        <div class="absolute top-0 left-0 w-full bg-amber-100 text-amber-800 text-xs text-center py-1 font-bold tracking-wider">
-            UI PROTOTYPE MODE
+    <aside class="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col relative z-20" aria-label="Sidebar">
+        <div class="absolute top-0 left-0 w-full bg-amber-100 text-amber-800 text-xs text-center py-1 font-bold tracking-wider" aria-hidden="true">
+            PROTOTYPE MODE
         </div>
 
         <div class="p-6 flex items-center gap-3 mt-4">
-            <div class="bg-blue-600 p-2 rounded-lg text-white">
-                <i data-lucide="activity" class="w-6 h-6"></i>
+            <div class="bg-blue-600 p-2 rounded-lg text-white" aria-hidden="true">
+                <i data-lucide="activity" class="w-6 h-6" aria-hidden="true"></i>
             </div>
             <h1 class="text-xl font-bold text-slate-900">HealthAI<span class="text-blue-600">Pro</span></h1>
         </div>
         
-        <nav class="flex-1 px-4 space-y-2 mt-4" id="desktop-nav">
-            <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 bg-blue-50 text-blue-700 font-medium" data-target="dashboard">
-                <i data-lucide="activity" class="w-5 h-5"></i>
+        <nav class="flex-1 px-4 space-y-2 mt-4" id="desktop-nav" role="tablist" aria-label="Main Navigation">
+            <button class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 bg-blue-50 text-blue-700 font-medium" data-target="dashboard" role="tab" aria-selected="true" aria-controls="tab-dashboard">
+                <i data-lucide="activity" class="w-5 h-5" aria-hidden="true"></i>
                 <span>Dashboard</span>
             </button>
-            <button onclick="switchTab('symptoms')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900" data-target="symptoms">
-                <i data-lucide="alert-circle" class="w-5 h-5"></i>
+            <button class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900" data-target="symptoms" role="tab" aria-selected="false" aria-controls="tab-symptoms">
+                <i data-lucide="alert-circle" class="w-5 h-5" aria-hidden="true"></i>
                 <span>Symptom Predictor</span>
             </button>
-            <button onclick="switchTab('reports')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900" data-target="reports">
-                <i data-lucide="file-text" class="w-5 h-5"></i>
+            <button class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900" data-target="reports" role="tab" aria-selected="false" aria-controls="tab-reports">
+                <i data-lucide="file-text" class="w-5 h-5" aria-hidden="true"></i>
                 <span>Report Analyzer</span>
             </button>
-            <button onclick="switchTab('activity')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900" data-target="activity">
-                <i data-lucide="footprints" class="w-5 h-5"></i>
+            <button class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900" data-target="activity" role="tab" aria-selected="false" aria-controls="tab-activity">
+                <i data-lucide="footprints" class="w-5 h-5" aria-hidden="true"></i>
                 <span>Activity Tracker</span>
             </button>
-            <button onclick="switchTab('live-hospitals')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900" data-target="live-hospitals">
-                <i data-lucide="map-pin" class="w-5 h-5"></i>
+            <button class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900" data-target="live-hospitals" role="tab" aria-selected="false" aria-controls="tab-live-hospitals">
+                <i data-lucide="map-pin" class="w-5 h-5" aria-hidden="true"></i>
                 <span>Find Hospitals</span>
             </button>
         </nav>
 
         <div class="p-4 border-t border-slate-200">
             <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold">
-                    UK
-                </div>
+                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold" aria-hidden="true" id="user-avatar">U</div>
                 <div>
-                    <p class="text-sm font-medium text-slate-900">Uday Kumar</p>
+                    <p class="text-sm font-medium text-slate-900" id="user-name-display">User Name</p>
                     <p class="text-xs text-slate-500">Premium User</p>
                 </div>
             </div>
+            <button id="logout-btn" class="w-full mt-2 text-sm text-red-600 hover:text-red-700 font-medium py-2 rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center gap-2">
+                <i data-lucide="log-out" class="w-4 h-4" aria-hidden="true"></i> Sign Out
+            </button>
         </div>
     </aside>
 
@@ -84,30 +211,30 @@
         
         <!-- Mobile Header -->
         <header class="md:hidden bg-white border-b border-slate-200 p-4 flex justify-between items-center z-10 relative">
-            <div class="absolute top-0 left-0 w-full bg-amber-100 text-amber-800 text-[10px] text-center py-0.5 font-bold tracking-wider">
-                UI PROTOTYPE MODE
+            <div class="absolute top-0 left-0 w-full bg-amber-100 text-amber-800 text-[10px] text-center py-0.5 font-bold tracking-wider" aria-hidden="true">
+                PROTOTYPE MODE
             </div>
             <div class="flex items-center gap-2 mt-3">
-                <div class="bg-blue-600 p-1.5 rounded-lg text-white">
-                    <i data-lucide="activity" class="w-5 h-5"></i>
+                <div class="bg-blue-600 p-1.5 rounded-lg text-white" aria-hidden="true">
+                    <i data-lucide="activity" class="w-5 h-5" aria-hidden="true"></i>
                 </div>
-                <h1 class="text-lg font-bold text-slate-900">HealthAI</h1>
+                <div class="text-lg font-bold text-slate-900" role="heading" aria-level="1">HealthAI</div>
             </div>
-            <div class="flex gap-2 mt-3" id="mobile-nav">
-                <button onclick="switchTab('dashboard')" class="mobile-nav-btn p-2 rounded-md bg-blue-100 text-blue-700" data-target="dashboard">
-                    <i data-lucide="activity" class="w-5 h-5"></i>
+            <div class="flex gap-2 mt-3" id="mobile-nav" role="tablist" aria-label="Mobile Navigation">
+                <button class="mobile-nav-btn p-2 rounded-md bg-blue-100 text-blue-700" data-target="dashboard" role="tab" aria-selected="true" aria-controls="tab-dashboard" aria-label="Dashboard">
+                    <i data-lucide="activity" class="w-5 h-5" aria-hidden="true"></i>
                 </button>
-                <button onclick="switchTab('symptoms')" class="mobile-nav-btn p-2 rounded-md text-slate-500 hover:bg-slate-100" data-target="symptoms">
-                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                <button class="mobile-nav-btn p-2 rounded-md text-slate-500 hover:bg-slate-100" data-target="symptoms" role="tab" aria-selected="false" aria-controls="tab-symptoms" aria-label="Symptom Predictor">
+                    <i data-lucide="alert-circle" class="w-5 h-5" aria-hidden="true"></i>
                 </button>
-                <button onclick="switchTab('reports')" class="mobile-nav-btn p-2 rounded-md text-slate-500 hover:bg-slate-100" data-target="reports">
-                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                <button class="mobile-nav-btn p-2 rounded-md text-slate-500 hover:bg-slate-100" data-target="reports" role="tab" aria-selected="false" aria-controls="tab-reports" aria-label="Report Analyzer">
+                    <i data-lucide="file-text" class="w-5 h-5" aria-hidden="true"></i>
                 </button>
-                <button onclick="switchTab('activity')" class="mobile-nav-btn p-2 rounded-md text-slate-500 hover:bg-slate-100" data-target="activity">
-                    <i data-lucide="footprints" class="w-5 h-5"></i>
+                <button class="mobile-nav-btn p-2 rounded-md text-slate-500 hover:bg-slate-100" data-target="activity" role="tab" aria-selected="false" aria-controls="tab-activity" aria-label="Activity Tracker">
+                    <i data-lucide="footprints" class="w-5 h-5" aria-hidden="true"></i>
                 </button>
-                <button onclick="switchTab('live-hospitals')" class="mobile-nav-btn p-2 rounded-md text-slate-500 hover:bg-slate-100" data-target="live-hospitals">
-                    <i data-lucide="map-pin" class="w-5 h-5"></i>
+                <button class="mobile-nav-btn p-2 rounded-md text-slate-500 hover:bg-slate-100" data-target="live-hospitals" role="tab" aria-selected="false" aria-controls="tab-live-hospitals" aria-label="Find Hospitals">
+                    <i data-lucide="map-pin" class="w-5 h-5" aria-hidden="true"></i>
                 </button>
             </div>
         </header>
@@ -116,454 +243,232 @@
         <div class="flex-1 overflow-y-auto p-4 md:p-8">
             
             <!-- Dashboard Tab -->
-            <div id="tab-dashboard" class="tab-content block max-w-5xl mx-auto space-y-6 animate-fade-in">
+            <div id="tab-dashboard" class="tab-content active max-w-5xl mx-auto space-y-6 animate-fade-in" role="tabpanel" aria-label="Dashboard">
                 <header class="mb-8">
-                    <h2 class="text-3xl font-bold text-slate-900">Welcome back, Uday Kumar!</h2>
+                    <h2 class="text-3xl font-bold text-slate-900">Welcome back, <span id="welcome-name">User</span>!</h2>
                     <p class="text-slate-500 mt-1">Here is your daily health summary.</p>
                 </header>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 rounded-xl bg-rose-50 text-rose-500"><i data-lucide="heart" class="w-6 h-6"></i></div>
-                            <span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">Normal</span>
+                <!-- Add Data Button -->
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-blue-100 p-2 rounded-lg text-blue-600" aria-hidden="true">
+                            <i data-lucide="plus-circle" class="w-6 h-6" aria-hidden="true"></i>
                         </div>
-                        <h4 class="text-slate-500 text-sm font-medium mb-1">Heart Rate</h4>
-                        <p class="text-2xl font-bold text-slate-900 mb-2">72 bpm</p>
-                        <p class="text-xs text-slate-400">+2 bpm from yesterday</p>
+                        <div>
+                            <h3 class="font-medium text-blue-900">Add Your Health Data</h3>
+                            <p class="text-sm text-blue-700">Start tracking your health metrics</p>
+                        </div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 rounded-xl bg-indigo-50 text-indigo-500"><i data-lucide="moon" class="w-6 h-6"></i></div>
-                            <span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">Good</span>
+                    <button id="add-data-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2">
+                        <i data-lucide="plus" class="w-5 h-5" aria-hidden="true"></i> Add Data
+                    </button>
+                </div>
+
+                <!-- Health Data Input Form -->
+                <div id="health-data-form" class="hidden bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-6">
+                    <h3 class="text-xl font-bold text-slate-900 mb-6">Enter Your Health Metrics</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="heart-rate" class="block text-sm font-medium text-slate-700 mb-2">Heart Rate (bpm)</label>
+                            <input type="number" id="heart-rate" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="72">
                         </div>
-                        <h4 class="text-slate-500 text-sm font-medium mb-1">Sleep Quality</h4>
-                        <p class="text-2xl font-bold text-slate-900 mb-2">7h 20m</p>
-                        <p class="text-xs text-slate-400">Deep sleep: 2h 10m</p>
+                        <div>
+                            <label for="sleep-hours" class="block text-sm font-medium text-slate-700 mb-2">Sleep Hours</label>
+                            <input type="number" id="sleep-hours" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="7.5">
+                        </div>
+                        <div>
+                            <label for="body-temp" class="block text-sm font-medium text-slate-700 mb-2">Body Temperature (°F)</label>
+                            <input type="number" id="body-temp" step="0.1" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="98.6">
+                        </div>
+                        <div>
+                            <label for="steps" class="block text-sm font-medium text-slate-700 mb-2">Steps Today</label>
+                            <input type="number" id="steps" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="10000">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="health-log" class="block text-sm font-medium text-slate-700 mb-2">Health Log Entry</label>
+                            <textarea id="health-log" rows="3" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none" placeholder="How are you feeling today?"></textarea>
+                        </div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 rounded-xl bg-orange-50 text-orange-500"><i data-lucide="thermometer" class="w-6 h-6"></i></div>
-                            <span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">Normal</span>
-                        </div>
-                        <h4 class="text-slate-500 text-sm font-medium mb-1">Body Temp</h4>
-                        <p class="text-2xl font-bold text-slate-900 mb-2">98.4 °F</p>
-                        <p class="text-xs text-slate-400">Stable</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                        <div class="absolute -right-2 -top-2 bg-amber-400 text-white text-[9px] font-bold px-4 py-1 rotate-45 transform origin-bottom-left shadow-sm">DEMO</div>
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 rounded-xl bg-teal-50 text-teal-500"><i data-lucide="footprints" class="w-6 h-6"></i></div>
-                            <span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">On Track</span>
-                        </div>
-                        <h4 class="text-slate-500 text-sm font-medium mb-1">Steps Today</h4>
-                        <p class="text-2xl font-bold text-slate-900 mb-2">8,432</p>
-                        <p class="text-xs text-slate-400">Goal: 10,000</p>
+                    <div class="mt-6 flex gap-3">
+                        <button id="save-health-data" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="save" class="w-5 h-5" aria-hidden="true"></i> Save Data
+                        </button>
+                        <button id="cancel-add-data" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-6 py-2.5 rounded-xl transition-colors">
+                            Cancel
+                        </button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-                    <!-- Recent Activity -->
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-lg font-semibold text-slate-900">Recent Health Logs</h3>
-                            <button class="text-sm text-blue-600 hover:underline">View All</button>
-                        </div>
-                        <div class="space-y-4">
-                            <div class="flex items-start gap-4 p-3 hover:bg-slate-50 rounded-xl transition-colors">
-                                <div class="mt-1 bg-white p-2 rounded-full border border-slate-200 shadow-sm text-blue-500"><i data-lucide="file-bar-chart-2" class="w-4 h-4"></i></div>
-                                <div><p class="font-medium text-slate-900">Complete Blood Count (CBC) Uploaded</p><p class="text-sm text-slate-500 mt-0.5">Today, 09:30 AM</p></div>
-                            </div>
-                            <div class="flex items-start gap-4 p-3 hover:bg-slate-50 rounded-xl transition-colors">
-                                <div class="mt-1 bg-white p-2 rounded-full border border-slate-200 shadow-sm text-orange-500"><i data-lucide="alert-circle" class="w-4 h-4"></i></div>
-                                <div><p class="font-medium text-slate-900">Reported mild headache & fatigue</p><p class="text-sm text-slate-500 mt-0.5">Yesterday, 08:15 PM</p></div>
-                            </div>
-                            <div class="flex items-start gap-4 p-3 hover:bg-slate-50 rounded-xl transition-colors">
-                                <div class="mt-1 bg-white p-2 rounded-full border border-slate-200 shadow-sm text-green-500"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
-                                <div><p class="font-medium text-slate-900">Monthly physical checkup completed</p><p class="text-sm text-slate-500 mt-0.5">May 10, 2026</p></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Health Score -->
-                    <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl shadow-sm text-white flex flex-col justify-between">
-                        <div>
-                            <h3 class="text-lg font-medium opacity-90">Overall Health Score</h3>
-                            <div class="mt-4 flex items-baseline gap-2">
-                                <span class="text-5xl font-bold">85</span>
-                                <span class="text-xl opacity-75">/ 100</span>
-                            </div>
-                            <p class="mt-2 text-sm opacity-80">Based on your recent reports and vital signs.</p>
-                        </div>
-                        <div class="mt-8">
-                            <div class="w-full bg-white/20 rounded-full h-2 mb-2">
-                                <div class="bg-green-400 h-2 rounded-full w-[85%]"></div>
-                            </div>
-                            <p class="text-sm font-medium flex justify-between">
-                                <span>Status: Optimal</span>
-                                <span class="text-green-300">Top 15%</span>
-                            </p>
-                        </div>
-                    </div>
+                <!-- Health Metrics Cards -->
+                <div id="health-metrics" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- These will be populated with real data -->
                 </div>
 
-                <!-- Comprehensive Vitals Tracking -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mt-6">
-                    <h3 class="text-lg font-semibold text-slate-900 mb-6">Detailed Health Vitals (Current vs. Ideal)</h3>
-                    <div class="space-y-6">
-                        <!-- Heart Rate -->
-                        <div>
-                            <div class="flex justify-between items-end mb-2">
-                                <div>
-                                    <span class="font-medium text-slate-900">Resting Heart Rate</span>
-                                    <span class="text-sm text-slate-500 ml-2">Current: <strong class="text-slate-900">72 bpm</strong></span>
-                                </div>
-                                <span class="text-sm text-green-600 font-medium">Ideal: 60 - 100 bpm</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2.5">
-                                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 72%;"></div>
-                            </div>
-                        </div>
-                        <!-- Body Temperature -->
-                        <div>
-                            <div class="flex justify-between items-end mb-2">
-                                <div>
-                                    <span class="font-medium text-slate-900">Body Temperature</span>
-                                    <span class="text-sm text-slate-500 ml-2">Current: <strong class="text-slate-900">98.4 °F</strong></span>
-                                </div>
-                                <span class="text-sm text-green-600 font-medium">Ideal: 97.0 - 99.0 °F</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2.5">
-                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 60%;"></div> 
-                            </div>
-                        </div>
-                        <!-- Blood Pressure -->
-                        <div>
-                            <div class="flex justify-between items-end mb-2">
-                                <div>
-                                    <span class="font-medium text-slate-900">Blood Pressure (Systolic/Diastolic)</span>
-                                    <span class="text-sm text-slate-500 ml-2">Current: <strong class="text-slate-900">118/76 mmHg</strong></span>
-                                </div>
-                                <span class="text-sm text-green-600 font-medium">Ideal: < 120/80 mmHg</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2.5">
-                                <div class="bg-indigo-500 h-2.5 rounded-full" style="width: 85%;"></div>
-                            </div>
-                        </div>
+                <!-- Health Logs -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold text-slate-900">Your Health Logs</h3>
+                        <button class="text-sm text-blue-600 hover:underline">View All</button>
+                    </div>
+                    <div id="health-logs-list" class="space-y-4">
+                        <!-- Logs will be populated here -->
                     </div>
                 </div>
-
             </div>
 
             <!-- Symptom Predictor Tab -->
-            <div id="tab-symptoms" class="tab-content hidden max-w-4xl mx-auto animate-fade-in">
+            <div id="tab-symptoms" class="tab-content hidden max-w-4xl mx-auto animate-fade-in" role="tabpanel" aria-label="Symptom Predictor">
                 <div class="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-xl flex items-start gap-3 mb-8">
-                    <i data-lucide="shield-alert" class="shrink-0 mt-0.5 w-5 h-5"></i>
+                    <i data-lucide="shield-alert" class="shrink-0 mt-0.5 w-5 h-5" aria-hidden="true"></i>
                     <div>
-                        <h4 class="font-semibold text-sm">Medical Disclaimer (Prototype)</h4>
-                        <p class="text-sm mt-1 opacity-90">This tool provides a <strong>simulated AI assessment</strong>. In a real environment, this connects to an AI backend. It is <strong>not</strong> a substitute for professional medical advice, diagnosis, or treatment.</p>
+                        <h3 class="font-semibold text-sm">Medical Disclaimer</h3>
+                        <p class="text-sm mt-1 opacity-90">This tool provides a <strong>simulated AI assessment</strong>. It is <strong>not</strong> a substitute for professional medical advice, diagnosis, or treatment.</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Input Section -->
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                         <h2 class="text-xl font-bold text-slate-900 mb-6">Describe Your Symptoms</h2>
                         <div class="space-y-5">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">What are you experiencing?</label>
-                                <textarea id="symptoms-input" rows="4" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none" placeholder="E.g., I have a high fever, a dry cough, and I feel very tired..." oninput="checkSymptomInput()"></textarea>
+                                <label for="symptoms-input" class="block text-sm font-medium text-slate-700 mb-2">What are you experiencing?</label>
+                                <textarea id="symptoms-input" rows="4" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none" placeholder="E.g., I have a high fever, a dry cough, and I feel very tired..."></textarea>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">How long have you had these symptoms?</label>
-                                <select class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white">
+                                <label for="symptom-duration" class="block text-sm font-medium text-slate-700 mb-2">How long have you had these symptoms?</label>
+                                <select id="symptom-duration" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white">
                                     <option>Less than 24 hours</option>
                                     <option>1-3 days</option>
                                     <option>1 week</option>
                                     <option>More than a week</option>
                                 </select>
                             </div>
-                            <button id="analyze-btn" onclick="analyzeSymptoms()" disabled class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-medium py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
-                                <i data-lucide="activity" class="w-5 h-5"></i> Analyze with AI
+                            <button id="analyze-btn" disabled class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-medium py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="activity" class="w-5 h-5" aria-hidden="true"></i> Analyze with AI
                             </button>
                         </div>
                     </div>
 
-                    <!-- Results Section -->
-                    <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200 flex flex-col h-full min-h-[400px]">
-                        
-                        <!-- Empty State -->
+                    <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200 flex flex-col h-full min-h-[400px]" aria-live="polite">
                         <div id="symptom-empty" class="flex flex-col items-center justify-center text-center h-full text-slate-400 py-12">
-                            <i data-lucide="alert-circle" class="w-12 h-12 mb-4 opacity-50"></i>
+                            <i data-lucide="alert-circle" class="w-12 h-12 mb-4 opacity-50" aria-hidden="true"></i>
                             <p>Enter your symptoms and click analyze to see potential conditions and recommendations.</p>
                         </div>
 
-                        <!-- Loading State -->
                         <div id="symptom-loading" class="hidden flex flex-col items-center justify-center text-center h-full py-12">
-                            <i data-lucide="loader-2" class="w-12 h-12 mb-4 text-blue-600 animate-spin"></i>
+                            <div class="spinner mb-4"></div>
                             <p class="text-slate-600 font-medium">Cross-referencing medical databases...</p>
                         </div>
 
-                        <!-- Result State -->
                         <div id="symptom-result" class="hidden animate-fade-in h-full flex flex-col">
                             <div class="mb-6 flex justify-between items-start">
                                 <h3 class="text-xl font-bold text-slate-900">Analysis Results</h3>
                                 <span id="symptom-urgency" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1"></span>
                             </div>
                             <div class="flex-1 space-y-4">
-                                <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Potential Matches</p>
+                                <h4 class="text-sm font-medium text-slate-500 uppercase tracking-wider">Potential Matches</h4>
                                 <div id="symptom-conditions-list"></div>
                             </div>
                             <div class="mt-6 bg-white p-4 rounded-xl border-l-4 border-blue-500 shadow-sm">
                                 <h4 class="font-semibold text-slate-900 mb-2 flex items-center gap-2">
-                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-blue-500"></i> Recommended Action
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-blue-500" aria-hidden="true"></i> Recommended Action
                                 </h4>
                                 <p id="symptom-advice" class="text-sm text-slate-600 leading-relaxed"></p>
                             </div>
-                            
-                            <!-- Dynamic Hospitals Container for Symptoms -->
-                            <div id="symptom-hospitals"></div>
                         </div>
-
                     </div>
                 </div>
             </div>
 
             <!-- Report Analyzer Tab -->
-            <div id="tab-reports" class="tab-content hidden max-w-5xl mx-auto space-y-6 animate-fade-in">
+            <div id="tab-reports" class="tab-content hidden max-w-5xl mx-auto space-y-6 animate-fade-in" role="tabpanel" aria-label="Medical Report Analyzer">
                 <header class="mb-8 flex justify-between items-end">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900">Medical Report Analyzer</h2>
                         <p class="text-slate-500 mt-1">Upload your lab reports (PDF/Image) to extract key metrics automatically.</p>
                     </div>
-                    <span class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded border border-amber-200 hidden sm:block">Demo Backend</span>
                 </header>
 
-                <!-- Hidden actual file input -->
-                <input type="file" id="real-file-input" class="hidden" accept=".pdf,.jpg,.jpeg,.png" onchange="handleRealFileUpload(event)">
+                <input type="file" id="real-file-input" class="hidden" accept=".pdf,.jpg,.jpeg,.png" aria-label="Upload Medical Report">
 
-                <!-- Upload State -->
-                <div id="report-upload" onclick="document.getElementById('real-file-input').click()" class="bg-white border-2 border-dashed border-blue-200 rounded-3xl p-12 flex flex-col items-center justify-center text-center shadow-sm hover:bg-blue-50/50 transition-colors cursor-pointer">
-                    <div class="bg-blue-100 p-4 rounded-full text-blue-600 mb-4">
-                        <i data-lucide="upload" class="w-8 h-8"></i>
+                <div id="report-upload" role="button" tabindex="0" class="bg-white border-2 border-dashed border-blue-200 rounded-3xl p-12 flex flex-col items-center justify-center text-center shadow-sm hover:bg-blue-50/50 transition-colors cursor-pointer">
+                    <div class="bg-blue-100 p-4 rounded-full text-blue-600 mb-4" aria-hidden="true">
+                        <i data-lucide="upload" class="w-8 h-8" aria-hidden="true"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-2">Upload your Lab Report</h3>
-                    <p class="text-slate-500 mb-6 max-w-md">Click here to browse files from your device. (This demo will read your filename but apply a generic CBC analysis).</p>
-                    <button class="bg-white border border-slate-300 text-slate-700 font-medium px-6 py-2.5 rounded-xl hover:bg-slate-50 shadow-sm pointer-events-none">Select File</button>
+                    <p class="text-slate-500 mb-6 max-w-md">Click here to browse files from your device.</p>
+                    <button class="bg-white border border-slate-300 text-slate-700 font-medium px-6 py-2.5 rounded-xl hover:bg-slate-50 shadow-sm pointer-events-none" tabindex="-1">Select File</button>
                     <p class="text-xs text-slate-400 mt-4">Supported formats: PDF, JPG, PNG (Max 10MB)</p>
                 </div>
 
-                <!-- Loading State -->
-                <div id="report-loading" class="hidden bg-white p-12 rounded-3xl border border-slate-200 shadow-sm flex flex-col items-center justify-center">
-                    <i data-lucide="loader-2" class="w-16 h-16 mb-6 text-blue-600 animate-spin"></i>
+                <div id="report-loading" class="hidden bg-white p-12 rounded-3xl border border-slate-200 shadow-sm flex flex-col items-center justify-center" aria-live="polite">
+                    <div class="spinner mb-6"></div>
                     <h3 class="text-lg font-bold text-slate-900 mb-2">Extracting Health Data</h3>
                     <p class="text-slate-500 text-center max-w-sm">Simulating OCR and AI scan on <strong id="display-filename" class="text-slate-800">your file</strong>. This takes a few seconds...</p>
                 </div>
 
-                <!-- Result State -->
-                <div id="report-result" class="hidden space-y-6 animate-fade-in">
+                <div id="report-result" class="hidden space-y-6 animate-fade-in" aria-live="polite">
                     <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                         <div class="flex items-center gap-3">
-                            <i data-lucide="file-text" class="w-6 h-6 text-blue-600"></i>
+                            <i data-lucide="file-text" class="w-6 h-6 text-blue-600" aria-hidden="true"></i>
                             <div>
                                 <p id="result-filename" class="font-medium text-slate-900">document.pdf</p>
-                                <p class="text-xs text-slate-500">Analyzed successfully (Mock Data Applied)</p>
+                                <p class="text-xs text-slate-500">Analyzed successfully</p>
                             </div>
                         </div>
-                        <button onclick="resetReport()" class="text-sm font-medium text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg transition-colors">
+                        <button id="btn-reset-report" class="text-sm font-medium text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg transition-colors">
                             Upload New
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Metrics Table -->
-                        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                            <div class="p-6 border-b border-slate-200 bg-slate-50/50">
-                                <h3 class="font-bold text-slate-900">Complete Blood Count (CBC)</h3>
-                                <p class="text-sm text-slate-500 mt-1">Patient: Uday Kumar • Date: May 1, 2026</p>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm">
-                                    <thead class="bg-slate-50 text-slate-500">
-                                        <tr>
-                                            <th class="px-6 py-4 font-medium">Biomarker</th>
-                                            <th class="px-6 py-4 font-medium">Result</th>
-                                            <th class="px-6 py-4 font-medium">Normal Range</th>
-                                            <th class="px-6 py-4 font-medium">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-100">
-                                        <tr class="hover:bg-slate-50/50">
-                                            <td class="px-6 py-4 font-medium text-slate-900">Hemoglobin</td>
-                                            <td class="px-6 py-4"><span class="font-bold text-slate-900">14.2</span> <span class="text-slate-500 text-xs">g/dL</span></td>
-                                            <td class="px-6 py-4 text-slate-500">13.8 - 17.2</td>
-                                            <td class="px-6 py-4"><span class="inline-flex items-center gap-1.5 bg-green-100 text-green-700 px-2.5 py-1 rounded-md text-xs font-semibold"><div class="w-1.5 h-1.5 rounded-full bg-green-500"></div> Normal</span></td>
-                                        </tr>
-                                        <tr class="hover:bg-slate-50/50">
-                                            <td class="px-6 py-4 font-medium text-slate-900">White Blood Cells</td>
-                                            <td class="px-6 py-4"><span class="font-bold text-red-600">11.5</span> <span class="text-slate-500 text-xs">x10^9/L</span></td>
-                                            <td class="px-6 py-4 text-slate-500">4.5 - 11.0</td>
-                                            <td class="px-6 py-4"><span class="inline-flex items-center gap-1.5 bg-red-100 text-red-700 px-2.5 py-1 rounded-md text-xs font-semibold"><i data-lucide="alert-circle" class="w-3 h-3"></i> Elevated</span></td>
-                                        </tr>
-                                        <tr class="hover:bg-slate-50/50">
-                                            <td class="px-6 py-4 font-medium text-slate-900">Platelets</td>
-                                            <td class="px-6 py-4"><span class="font-bold text-slate-900">250</span> <span class="text-slate-500 text-xs">x10^9/L</span></td>
-                                            <td class="px-6 py-4 text-slate-500">150 - 450</td>
-                                            <td class="px-6 py-4"><span class="inline-flex items-center gap-1.5 bg-green-100 text-green-700 px-2.5 py-1 rounded-md text-xs font-semibold"><div class="w-1.5 h-1.5 rounded-full bg-green-500"></div> Normal</span></td>
-                                        </tr>
-                                        <tr class="hover:bg-slate-50/50">
-                                            <td class="px-6 py-4 font-medium text-slate-900">Cholesterol (Total)</td>
-                                            <td class="px-6 py-4"><span class="font-bold text-red-600">210</span> <span class="text-slate-500 text-xs">mg/dL</span></td>
-                                            <td class="px-6 py-4 text-slate-500">< 200</td>
-                                            <td class="px-6 py-4"><span class="inline-flex items-center gap-1.5 bg-red-100 text-red-700 px-2.5 py-1 rounded-md text-xs font-semibold"><i data-lucide="alert-circle" class="w-3 h-3"></i> Elevated</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 class="font-bold text-slate-900 mb-4">Report Analysis</h3>
+                        <div class="bg-blue-50 text-blue-900 p-4 rounded-xl text-sm leading-relaxed mb-4">
+                            <p>Your report has been analyzed. Key metrics have been extracted and will be added to your health profile.</p>
                         </div>
-
-                        <!-- AI Summary -->
-                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col h-full">
-                            <h3 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                                <i data-lucide="activity-square" class="w-5 h-5 text-blue-600"></i> AI Health Insight
-                            </h3>
-                            <div class="bg-blue-50 text-blue-900 p-4 rounded-xl text-sm leading-relaxed mb-6">
-                                Your Hemoglobin and Platelet levels are within normal limits. However, Total Cholesterol and White Blood Cell count are slightly elevated, which may indicate mild inflammation or dietary factors. Please consult your physician for a detailed review.
-                            </div>
-                            <div class="mt-auto pt-6 border-t border-slate-100">
-                                <h4 class="text-sm font-medium text-slate-900 mb-3">Detected Flags</h4>
-                                <div class="space-y-2">
-                                    <div class="flex justify-between items-center text-sm">
-                                        <span class="text-slate-600">White Blood Cells</span>
-                                        <span class="text-red-600 font-medium">HIGH</span>
-                                    </div>
-                                    <div class="flex justify-between items-center text-sm">
-                                        <span class="text-slate-600">Cholesterol (Total)</span>
-                                        <span class="text-red-600 font-medium">HIGH</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <p class="text-sm text-slate-500">To see detailed analysis, please connect to a backend service that can process medical documents.</p>
                     </div>
-
-                    <!-- Treatment & Diet Plan -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                        <!-- Diet & Nutrition -->
-                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                            <h3 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                                <i data-lucide="utensils" class="w-5 h-5 text-green-600"></i> Recommended Diet Plan
-                            </h3>
-                            <p class="text-sm text-slate-500 mb-4">Based on your elevated cholesterol and WBC count, here is a targeted nutrition plan to help manage your levels:</p>
-                            
-                            <div class="space-y-4">
-                                <div class="bg-green-50 p-4 rounded-xl border border-green-100">
-                                    <h4 class="text-sm font-bold text-green-800 mb-2 flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4"></i> Foods to Eat (Focus)</h4>
-                                    <ul class="text-sm text-green-700 space-y-1.5 list-disc pl-5">
-                                        <li><strong>Oats & Whole Grains:</strong> High in soluble fiber to reduce LDL cholesterol.</li>
-                                        <li><strong>Fatty Fish:</strong> Salmon or mackerel for Omega-3 fatty acids (2x/week).</li>
-                                        <li><strong>Antioxidant-rich Fruits:</strong> Berries and citrus to support your immune system (WBC).</li>
-                                        <li><strong>Nuts & Seeds:</strong> Almonds and chia seeds for healthy fats.</li>
-                                    </ul>
-                                </div>
-                                <div class="bg-red-50 p-4 rounded-xl border border-red-100">
-                                    <h4 class="text-sm font-bold text-red-800 mb-2 flex items-center gap-2"><i data-lucide="x-circle" class="w-4 h-4"></i> Foods to Avoid</h4>
-                                    <ul class="text-sm text-red-700 space-y-1.5 list-disc pl-5">
-                                        <li><strong>Trans Fats:</strong> Fried foods, commercial baked goods, margarines.</li>
-                                        <li><strong>Saturated Fats:</strong> Red meat, full-fat dairy products, processed meats.</li>
-                                        <li><strong>High-Sugar Items:</strong> Sodas, excessive candies (can spike inflammation).</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Medications / Treatments -->
-                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
-                            <h3 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                                <i data-lucide="pill" class="w-5 h-5 text-purple-600"></i> Treatment & Interventions
-                            </h3>
-                            
-                            <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl mb-4 flex gap-2">
-                                <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-600 shrink-0"></i>
-                                <p class="text-xs text-amber-800"><strong>Medical Disclaimer:</strong> AI-generated suggestions are based on standard clinical guidelines. NEVER start, stop, or change medications without consulting your prescribing doctor.</p>
-                            </div>
-
-                            <p class="text-sm text-slate-500 mb-4">Common medical interventions for your specific profile (High Cholesterol & Elevated WBC):</p>
-
-                            <div class="flex-1 space-y-3">
-                                <div class="border border-slate-100 p-3 rounded-lg flex items-start gap-3 bg-slate-50">
-                                    <div class="bg-purple-100 p-2 rounded-lg text-purple-600 mt-0.5"><i data-lucide="pill" class="w-4 h-4"></i></div>
-                                    <div>
-                                        <h4 class="text-sm font-bold text-slate-900">Statins (e.g., Atorvastatin, Rosuvastatin)</h4>
-                                        <p class="text-xs text-slate-600 mt-1">May be prescribed by your doctor if diet and exercise do not sufficiently lower your Total Cholesterol (currently 210 mg/dL).</p>
-                                    </div>
-                                </div>
-                                <div class="border border-slate-100 p-3 rounded-lg flex items-start gap-3 bg-slate-50">
-                                    <div class="bg-blue-100 p-2 rounded-lg text-blue-600 mt-0.5"><i data-lucide="search" class="w-4 h-4"></i></div>
-                                    <div>
-                                        <h4 class="text-sm font-bold text-slate-900">Further Infection Screening</h4>
-                                        <p class="text-xs text-slate-600 mt-1">Elevated WBC (11.5 x10^9/L) often indicates mild infection/inflammation. No specific antibiotic is recommended until a doctor identifies the root cause.</p>
-                                    </div>
-                                </div>
-                                <div class="border border-slate-100 p-3 rounded-lg flex items-start gap-3 bg-slate-50">
-                                    <div class="bg-green-100 p-2 rounded-lg text-green-600 mt-0.5"><i data-lucide="leaf" class="w-4 h-4"></i></div>
-                                    <div>
-                                        <h4 class="text-sm font-bold text-slate-900">Omega-3 Supplements</h4>
-                                        <p class="text-xs text-slate-600 mt-1">Often recommended over-the-counter to support cardiovascular health and improve lipid profiles naturally.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Dynamic Hospitals Container for Reports -->
-                    <div id="report-hospitals"></div>
-
                 </div>
-
             </div>
 
-            <!-- Activity & Steps Tracker Tab -->
-            <div id="tab-activity" class="tab-content hidden max-w-5xl mx-auto space-y-6 animate-fade-in">
+            <!-- Activity Tracker Tab -->
+            <div id="tab-activity" class="tab-content hidden max-w-5xl mx-auto space-y-6 animate-fade-in" role="tabpanel" aria-label="Activity Tracker">
                 <header class="mb-8 flex justify-between items-end">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900">Activity Tracker</h2>
                         <p class="text-slate-500 mt-1">Monitor your steps and daily activity.</p>
                     </div>
-                     <span class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded border border-amber-200 hidden sm:block">Demo Data</span>
                 </header>
 
-                <!-- Permission Overlay -->
                 <div id="activity-permission-overlay" class="bg-white p-12 rounded-3xl border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
-                    <div class="bg-teal-100 p-4 rounded-full text-teal-600 mb-6">
-                        <i data-lucide="smartphone" class="w-10 h-10"></i>
+                    <div class="bg-teal-100 p-4 rounded-full text-teal-600 mb-6" aria-hidden="true">
+                        <i data-lucide="smartphone" class="w-10 h-10" aria-hidden="true"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-3">Enable Motion & Fitness Tracking</h3>
                     <p class="text-slate-500 max-w-md mb-8">Websites cannot access your Apple Health or Google Fit history. This will request standard browser DeviceMotion permissions to show how a live tracker UI looks.</p>
-                    <button id="activity-permission-btn" onclick="requestActivityPermission()" class="bg-teal-600 hover:bg-teal-700 text-white font-medium px-8 py-3 rounded-xl transition-colors shadow-sm flex items-center gap-2">
-                        <i data-lucide="check" class="w-5 h-5"></i> View Dashboard (Simulated)
+                    <button id="activity-permission-btn" class="bg-teal-600 hover:bg-teal-700 text-white font-medium px-8 py-3 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2">
+                        <i data-lucide="check" class="w-5 h-5" aria-hidden="true"></i> View Dashboard (Simulated)
                     </button>
                 </div>
 
-                <!-- Activity Dashboard (Hidden until permission granted) -->
                 <div id="activity-dashboard" class="hidden space-y-6 animate-fade-in">
-                    <!-- Period Toggle -->
                     <div class="flex justify-center mb-8">
-                        <div class="bg-slate-100 p-1.5 rounded-xl inline-flex">
-                            <button id="btn-act-today" onclick="setActivityView('today')" class="activity-tab-btn bg-white shadow-sm text-slate-900 px-6 py-2 rounded-lg text-sm font-semibold transition-all">Today</button>
-                            <button id="btn-act-week" onclick="setActivityView('week')" class="activity-tab-btn text-slate-500 hover:text-slate-700 px-6 py-2 rounded-lg text-sm font-semibold transition-all">Weekly</button>
-                            <button id="btn-act-month" onclick="setActivityView('month')" class="activity-tab-btn text-slate-500 hover:text-slate-700 px-6 py-2 rounded-lg text-sm font-semibold transition-all">Monthly</button>
-                            <button id="btn-act-year" onclick="setActivityView('year')" class="activity-tab-btn text-slate-500 hover:text-slate-700 px-6 py-2 rounded-lg text-sm font-semibold transition-all">Yearly</button>
+                        <div class="bg-slate-100 p-1.5 rounded-xl inline-flex" role="tablist" aria-label="Activity Time Period">
+                            <button id="btn-act-today" data-period="today" class="activity-tab-btn bg-white shadow-sm text-slate-900 px-6 py-2 rounded-lg text-sm font-semibold transition-all" role="tab" aria-selected="true">Today</button>
+                            <button id="btn-act-week" data-period="week" class="activity-tab-btn text-slate-500 hover:text-slate-700 px-6 py-2 rounded-lg text-sm font-semibold transition-all" role="tab" aria-selected="false">Weekly</button>
+                            <button id="btn-act-month" data-period="month" class="activity-tab-btn text-slate-500 hover:text-slate-700 px-6 py-2 rounded-lg text-sm font-semibold transition-all" role="tab" aria-selected="false">Monthly</button>
+                            <button id="btn-act-year" data-period="year" class="activity-tab-btn text-slate-500 hover:text-slate-700 px-6 py-2 rounded-lg text-sm font-semibold transition-all" role="tab" aria-selected="false">Yearly</button>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Main Steps Display -->
                         <div class="lg:col-span-2 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-3xl p-8 text-white shadow-sm relative overflow-hidden">
-                            <i data-lucide="footprints" class="w-48 h-48 absolute -right-8 -bottom-10 opacity-10"></i>
+                            <i data-lucide="footprints" class="w-48 h-48 absolute -right-8 -bottom-10 opacity-10" aria-hidden="true"></i>
                             <div class="relative z-10">
-                                <h3 class="text-teal-100 font-medium mb-2">Total Steps Walked (Mock Data)</h3>
+                                <h3 class="text-teal-100 font-medium mb-2">Total Steps Walked</h3>
                                 <div class="flex items-baseline gap-3 mb-8">
-                                    <span id="act-steps" class="text-6xl font-bold tracking-tight">8,432</span>
+                                    <span id="act-steps" class="text-6xl font-bold tracking-tight" aria-label="Total steps">0</span>
                                 </div>
                                 
                                 <div>
@@ -571,27 +476,26 @@
                                         <span class="text-sm font-medium text-teal-100">Progress to Goal</span>
                                         <span id="act-goal" class="text-sm font-bold">Goal: 10,000</span>
                                     </div>
-                                    <div class="w-full bg-black/20 rounded-full h-3">
-                                        <div id="act-progress" class="bg-white h-3 rounded-full transition-all duration-1000 ease-out" style="width: 84%;"></div>
+                                    <div class="w-full bg-black/20 rounded-full h-3" role="progressbar" aria-label="Steps progress toward goal" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                        <div id="act-progress" class="bg-white h-3 rounded-full transition-all duration-1000 ease-out w-[var(--progress)]" style="--progress: 0%;"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Mini Stats -->
                         <div class="space-y-6 flex flex-col justify-between">
                             <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4 h-full">
-                                <div class="bg-blue-100 text-blue-600 p-4 rounded-2xl"><i data-lucide="map" class="w-8 h-8"></i></div>
+                                <div class="bg-blue-100 text-blue-600 p-4 rounded-2xl" aria-hidden="true"><i data-lucide="map" class="w-8 h-8" aria-hidden="true"></i></div>
                                 <div>
-                                    <p class="text-sm text-slate-500 font-medium">Distance Covered</p>
-                                    <p id="act-distance" class="text-2xl font-bold text-slate-900">6.2 km</p>
+                                    <h4 class="text-sm text-slate-500 font-medium mb-1">Distance Covered</h4>
+                                    <p id="act-distance" class="text-2xl font-bold text-slate-900">0 km</p>
                                 </div>
                             </div>
                             <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4 h-full">
-                                <div class="bg-orange-100 text-orange-600 p-4 rounded-2xl"><i data-lucide="flame" class="w-8 h-8"></i></div>
+                                <div class="bg-orange-100 text-orange-600 p-4 rounded-2xl" aria-hidden="true"><i data-lucide="flame" class="w-8 h-8" aria-hidden="true"></i></div>
                                 <div>
-                                    <p class="text-sm text-slate-500 font-medium">Calories Burned</p>
-                                    <p id="act-cal" class="text-2xl font-bold text-slate-900">340 kcal</p>
+                                    <h4 class="text-sm text-slate-500 font-medium mb-1">Calories Burned</h4>
+                                    <p id="act-cal" class="text-2xl font-bold text-slate-900">0 kcal</p>
                                 </div>
                             </div>
                         </div>
@@ -600,31 +504,29 @@
             </div>
 
             <!-- Live Hospitals Finder Tab -->
-            <div id="tab-live-hospitals" class="tab-content hidden max-w-5xl mx-auto space-y-6 animate-fade-in">
+            <div id="tab-live-hospitals" class="tab-content hidden max-w-5xl mx-auto space-y-6 animate-fade-in" role="tabpanel" aria-label="Find Hospitals">
                 <header class="mb-6">
                     <h2 class="text-2xl font-bold text-slate-900">Nearby Medical Facilities</h2>
                     <p class="text-slate-500 mt-1">Locate the closest clinics and hospitals using your live location.</p>
                 </header>
 
                 <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center">
-                    <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i data-lucide="map-pin" class="w-10 h-10"></i>
+                    <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6" aria-hidden="true">
+                        <i data-lucide="map-pin" class="w-10 h-10" aria-hidden="true"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-3">Find Hospitals Near You</h3>
                     <p class="text-slate-500 max-w-md mx-auto mb-8">We need your current location to accurately map the best medical facilities around you in an emergency. <br><br><strong>Note:</strong> Browsers block GPS if you open this file locally. You must host this online via HTTPS.</p>
                     
-                    <button id="live-location-btn" onclick="findHospitalsByLocation()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-xl transition-colors shadow-md flex items-center justify-center gap-2 mx-auto">
-                        <i data-lucide="crosshairs" class="w-5 h-5"></i> Use My Current Location
+                    <button id="live-location-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-xl transition-colors shadow-md flex items-center justify-center gap-2 mx-auto">
+                        <i data-lucide="crosshairs" class="w-5 h-5" aria-hidden="true"></i> Use My Current Location
                     </button>
                     
-                    <!-- Improved Error Display area -->
-                    <div id="location-status-container" class="mt-6 hidden bg-slate-50 border border-slate-200 rounded-lg p-4 text-left max-w-lg mx-auto">
+                    <div id="location-status-container" class="mt-6 hidden bg-slate-50 border border-slate-200 rounded-lg p-4 text-left max-w-lg mx-auto" aria-live="assertive">
                         <p id="location-status" class="text-sm font-medium text-slate-700"></p>
                     </div>
                 </div>
 
-                <div id="live-hospitals-results" class="hidden animate-fade-in">
-                    <!-- Hospitals will render here -->
+                <div id="live-hospitals-results" class="hidden animate-fade-in" aria-live="polite">
                     <div id="live-hospitals-list"></div>
                 </div>
             </div>
@@ -634,116 +536,277 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        // Initialize Lucide Icons
+        // Initialize Lucide icons
         lucide.createIcons();
-
-        // ---- Tab Switching Logic ----
+        
+        // Tab switching logic
         function switchTab(tabId) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(el => {
-                el.classList.remove('block');
+                el.classList.remove('active');
                 el.classList.add('hidden');
             });
-            // Show target tab
+            
             const target = document.getElementById(`tab-${tabId}`);
-            if(target) {
+            if (target) {
                 target.classList.remove('hidden');
-                target.classList.add('block');
+                target.classList.add('active');
+                lucide.createIcons({ root: target });
             }
-
-            // Update Desktop Nav Styles
+            
+            // Update navigation states
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                if (btn.dataset.target === tabId) {
+                const isSelected = btn.dataset.target === tabId;
+                btn.setAttribute('aria-selected', isSelected.toString());
+                if (isSelected) {
                     btn.className = "nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 bg-blue-50 text-blue-700 font-medium";
                 } else {
                     btn.className = "nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900";
                 }
             });
-
-            // Update Mobile Nav Styles
+            
             document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
-                if (btn.dataset.target === tabId) {
+                const isSelected = btn.dataset.target === tabId;
+                btn.setAttribute('aria-selected', isSelected.toString());
+                if (isSelected) {
                     btn.className = "mobile-nav-btn p-2 rounded-md bg-blue-100 text-blue-700";
                 } else {
                     btn.className = "mobile-nav-btn p-2 rounded-md text-slate-500 hover:bg-slate-100";
                 }
             });
         }
-
-        // ---- Dynamic Hospital Recommendations Logic ----
-        const hospitalsDB = [
-            { name: "Apollo Hospitals", distance: "2.5 km", location: "Jubilee Hills, Hyderabad", tags: ["Cardiology", "Gen Medicine", "Emergency"] },
-            { name: "Yashoda Hospitals", distance: "4.1 km", location: "Secunderabad, Hyderabad", tags: ["Cardiology", "Diagnostics", "Pulmonology"] },
-            { name: "CARE Hospitals", distance: "5.8 km", location: "Banjara Hills, Hyderabad", tags: ["Internal Medicine", "Cardiology"] },
-            { name: "AIG Hospitals", distance: "7.2 km", location: "Gachibowli, Hyderabad", tags: ["Gastroenterology", "Internal Medicine", "Emergency"] },
-            { name: "KIMS Hospitals", distance: "3.4 km", location: "Minister Road, Hyderabad", tags: ["Orthopedics", "Gen Medicine", "Pulmonology"] }
-        ];
-
-        function renderHospitals(targetSpecialties, containerId, contextMessage) {
-            const container = document.getElementById(containerId);
-            if (!container) return; // safeguard
+        
+        // Add click handlers for navigation
+        document.querySelectorAll('.nav-btn, .mobile-nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetBtn = e.target.closest('button');
+                if (targetBtn && targetBtn.dataset.target) {
+                    switchTab(targetBtn.dataset.target);
+                }
+            });
+        });
+        
+        // User Management
+        class UserManager {
+            constructor() {
+                this.currentUser = null;
+                this.loadUser();
+            }
             
-            // Filter hospitals that match at least one required specialty
-            let recommended = hospitalsDB.filter(h => h.tags.some(tag => targetSpecialties.includes(tag)));
-            // If no exact match, fallback to general hospitals nearby
-            if (recommended.length === 0) recommended = hospitalsDB.slice(0, 3);
-            else recommended = recommended.slice(0, 3);
-
-            const hospitalsHtml = recommended.map(hospital => `
-                <div class="border border-slate-200 rounded-xl p-4 hover:border-blue-400 hover:shadow-md transition-all bg-white group cursor-pointer">
-                    <div class="flex justify-between items-start mb-2">
-                        <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors">${hospital.name}</h4>
-                        <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded">${hospital.distance}</span>
+            loadUser() {
+                const userData = localStorage.getItem('healthai_user');
+                if (userData) {
+                    this.currentUser = JSON.parse(userData);
+                    this.updateUI();
+                } else {
+                    this.showLoginModal();
+                }
+            }
+            
+            login(name, email) {
+                this.currentUser = { name, email };
+                localStorage.setItem('healthai_user', JSON.stringify(this.currentUser));
+                this.updateUI();
+            }
+            
+            logout() {
+                this.currentUser = null;
+                localStorage.removeItem('healthai_user');
+                localStorage.removeItem('healthai_health_data');
+                localStorage.removeItem('healthai_logs');
+                this.showLoginModal();
+            }
+            
+            showLoginModal() {
+                document.getElementById('login-modal').classList.remove('hidden');
+            }
+            
+            updateUI() {
+                if (this.currentUser) {
+                    document.getElementById('welcome-name').textContent = this.currentUser.name;
+                    document.getElementById('user-name-display').textContent = this.currentUser.name;
+                    document.getElementById('user-avatar').textContent = this.currentUser.name.charAt(0).toUpperCase();
+                    document.getElementById('login-modal').classList.add('hidden');
+                    this.loadHealthData();
+                }
+            }
+            
+            loadHealthData() {
+                const healthData = JSON.parse(localStorage.getItem('healthai_health_data') || '{}');
+                const logs = JSON.parse(localStorage.getItem('healthai_logs') || '[]');
+                
+                this.displayHealthMetrics(healthData);
+                this.displayHealthLogs(logs);
+                this.updateActivityData(healthData);
+            }
+            
+            displayHealthMetrics(data) {
+                const metricsContainer = document.getElementById('health-metrics');
+                const metrics = [
+                    { id: 'heart-rate', icon: 'heart', label: 'Heart Rate', unit: 'bpm', value: data.heartRate || '--', status: data.heartRate ? (data.heartRate >= 60 && data.heartRate <= 100 ? 'Normal' : 'Abnormal') : 'No Data' },
+                    { id: 'sleep-hours', icon: 'moon', label: 'Sleep Quality', unit: 'hours', value: data.sleepHours || '--', status: data.sleepHours ? (data.sleepHours >= 7 ? 'Good' : 'Poor') : 'No Data' },
+                    { id: 'body-temp', icon: 'thermometer', label: 'Body Temp', unit: '°F', value: data.bodyTemp || '--', status: data.bodyTemp ? (data.bodyTemp >= 97 && data.bodyTemp <= 99 ? 'Normal' : 'Abnormal') : 'No Data' },
+                    { id: 'steps', icon: 'footprints', label: 'Steps Today', value: data.steps || '--', status: data.steps ? (data.steps >= 10000 ? 'On Track' : 'Needs Improvement') : 'No Data' }
+                ];
+                
+                const metricsHtml = metrics.map(metric => `
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 rounded-xl ${metric.status === 'Normal' || metric.status === 'Good' || metric.status === 'On Track' ? 'bg-green-50 text-green-500' : metric.status === 'Abnormal' || metric.status === 'Poor' ? 'bg-red-50 text-red-500' : 'bg-slate-50 text-slate-500'}" aria-hidden="true">
+                                <i data-lucide="${metric.icon}" class="w-6 h-6" aria-hidden="true"></i>
+                            </div>
+                            <span class="px-2.5 py-1 ${metric.status === 'Normal' || metric.status === 'Good' || metric.status === 'On Track' ? 'bg-green-100 text-green-700' : metric.status === 'Abnormal' || metric.status === 'Poor' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-700'} text-xs font-semibold rounded-full">${metric.status}</span>
+                        </div>
+                        <h3 class="text-slate-500 text-sm font-medium mb-1">${metric.label}</h3>
+                        <p class="text-2xl font-bold text-slate-900 mb-2" aria-label="${metric.value} ${metric.unit}">${metric.value} ${metric.unit || ''}</p>
+                        <p class="text-xs text-slate-400">${metric.status === 'No Data' ? 'Add your data to see metrics' : 'Last updated: Today'}</p>
                     </div>
-                    <p class="text-xs text-slate-500 mb-3"><i data-lucide="map-pin" class="w-3 h-3 inline mr-1"></i>${hospital.location}</p>
-                    <div class="flex gap-2 mb-4 flex-wrap">
-                        ${hospital.tags.map(tag => `<span class="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full border border-slate-200">${tag}</span>`).join('')}
-                    </div>
-                    <button class="w-full text-sm font-medium text-blue-600 border border-blue-200 rounded-lg py-2 hover:bg-blue-600 hover:text-white transition-colors flex justify-center items-center gap-2">
-                        <i data-lucide="calendar-plus" class="w-4 h-4"></i> Book Appt
-                    </button>
-                </div>
-            `).join('');
-
-            container.innerHTML = `
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mt-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-slate-900 flex items-center gap-2">
-                            <i data-lucide="building-2" class="w-5 h-5 text-red-500"></i> Recommended Facilities Near You
-                        </h3>
-                    </div>
-                    <p class="text-sm text-slate-500 mb-6">${contextMessage}</p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        ${hospitalsHtml}
-                    </div>
-                </div>
-            `;
-            lucide.createIcons();
+                `).join('');
+                
+                metricsContainer.innerHTML = metricsHtml;
+                lucide.createIcons();
+            }
+            
+            displayHealthLogs(logs) {
+                const logsContainer = document.getElementById('health-logs-list');
+                
+                if (logs.length === 0) {
+                    logsContainer.innerHTML = `
+                        <div class="text-center py-8 text-slate-400">
+                            <i data-lucide="file-text" class="w-12 h-12 mx-auto mb-3 opacity-50" aria-hidden="true"></i>
+                            <p>No health logs yet. Add your first entry!</p>
+                        </div>
+                    `;
+                } else {
+                    const logsHtml = logs.slice(0, 3).map(log => `
+                        <div class="flex items-start gap-4 p-3 hover:bg-slate-50 rounded-xl transition-colors">
+                            <div class="mt-1 bg-white p-2 rounded-full border border-slate-200 shadow-sm ${log.type === 'log' ? 'text-blue-500' : 'text-orange-500'}" aria-hidden="true">
+                                <i data-lucide="${log.type === 'log' ? 'file-text' : 'alert-circle'}" class="w-4 h-4" aria-hidden="true"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-slate-900">${log.text}</p>
+                                <p class="text-sm text-slate-500 mt-0.5">${log.date}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    logsContainer.innerHTML = logsHtml;
+                }
+                
+                lucide.createIcons();
+            }
+            
+            updateActivityData(data) {
+                const steps = data.steps || 0;
+                const distance = (steps * 0.0007).toFixed(1); // Convert steps to km (rough estimate)
+                const calories = Math.floor(steps * 0.04); // Rough calorie calculation
+                
+                document.getElementById('act-steps').textContent = steps.toLocaleString();
+                document.getElementById('act-distance').textContent = `${distance} km`;
+                document.getElementById('act-cal').textContent = `${calories} kcal`;
+                
+                const progress = Math.min((steps / 10000) * 100, 100);
+                document.getElementById('act-progress').style.setProperty('--progress', `${progress}%`);
+            }
+            
+            saveHealthData(data) {
+                const currentData = JSON.parse(localStorage.getItem('healthai_health_data') || '{}');
+                const updatedData = { ...currentData, ...data };
+                
+                localStorage.setItem('healthai_health_data', JSON.stringify(updatedData));
+                
+                // Add to logs
+                const logs = JSON.parse(localStorage.getItem('healthai_logs') || '[]');
+                logs.unshift({
+                    type: 'log',
+                    text: `Updated health metrics: Heart rate ${data.heartRate || 'not set'} bpm, Sleep ${data.sleepHours || 'not set'} hours`,
+                    date: new Date().toLocaleString()
+                });
+                
+                localStorage.setItem('healthai_logs', JSON.stringify(logs));
+                
+                this.loadHealthData();
+            }
         }
-
-        // ---- Symptom Predictor Logic ----
-        function checkSymptomInput() {
-            const input = document.getElementById('symptoms-input').value.trim();
-            document.getElementById('analyze-btn').disabled = input.length === 0;
-        }
-
-        function analyzeSymptoms() {
-            const symptoms = document.getElementById('symptoms-input').value.toLowerCase();
-            const btn = document.getElementById('analyze-btn');
+        
+        // Initialize user manager
+        const userManager = new UserManager();
+        
+        // Login form handler
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('user-name').value.trim();
+            const email = document.getElementById('user-email').value.trim();
             
-            // Switch UI to Loading
-            btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Analyzing...`;
-            lucide.createIcons();
+            if (name && email) {
+                userManager.login(name, email);
+            }
+        });
+        
+        // Logout handler
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            userManager.logout();
+        });
+        
+        // Add data button handler
+        document.getElementById('add-data-btn').addEventListener('click', () => {
+            document.getElementById('health-data-form').classList.remove('hidden');
+            document.getElementById('add-data-btn').classList.add('hidden');
+        });
+        
+        // Cancel add data
+        document.getElementById('cancel-add-data').addEventListener('click', () => {
+            document.getElementById('health-data-form').classList.add('hidden');
+            document.getElementById('add-data-btn').classList.remove('hidden');
+        });
+        
+        // Save health data
+        document.getElementById('save-health-data').addEventListener('click', () => {
+            const healthData = {
+                heartRate: parseInt(document.getElementById('heart-rate').value) || null,
+                sleepHours: parseFloat(document.getElementById('sleep-hours').value) || null,
+                bodyTemp: parseFloat(document.getElementById('body-temp').value) || null,
+                steps: parseInt(document.getElementById('steps').value) || null
+            };
             
+            const logText = document.getElementById('health-log').value.trim();
+            if (logText) {
+                const logs = JSON.parse(localStorage.getItem('healthai_logs') || '[]');
+                logs.unshift({
+                    type: 'log',
+                    text: logText,
+                    date: new Date().toLocaleString()
+                });
+                localStorage.setItem('healthai_logs', JSON.stringify(logs));
+            }
+            
+            userManager.saveHealthData(healthData);
+            
+            // Reset form and hide
+            document.getElementById('health-data-form').reset();
+            document.getElementById('health-data-form').classList.add('hidden');
+            document.getElementById('add-data-btn').classList.remove('hidden');
+        });
+        
+        // Symptom Predictor Logic
+        const symptomAnalysisBtn = document.getElementById('analyze-btn');
+        const symptomsInput = document.getElementById('symptoms-input');
+        
+        symptomsInput.addEventListener('input', () => {
+            symptomAnalysisBtn.disabled = symptomsInput.value.trim() === '';
+        });
+        
+        symptomAnalysisBtn.addEventListener('click', () => {
+            const symptoms = symptomsInput.value.toLowerCase();
+            const duration = document.getElementById('symptom-duration').value;
+            
+            // Show loading state
             document.getElementById('symptom-empty').classList.add('hidden');
             document.getElementById('symptom-loading').classList.remove('hidden');
             document.getElementById('symptom-result').classList.add('hidden');
-
-            // Simulate API Call delay
+            
             setTimeout(() => {
                 let mockResult = {};
-
+                
                 if (symptoms.includes('chest pain') || symptoms.includes('shortness of breath')) {
                     mockResult = {
                         conditions: [
@@ -752,7 +815,7 @@
                         ],
                         urgency: 'high',
                         badgeClass: 'bg-red-100 text-red-700',
-                        badgeText: '<i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> High Urgency',
+                        badgeText: '<i data-lucide="alert-circle" class="w-3.5 h-3.5" aria-hidden="true"></i> High Urgency',
                         advice: "Seek immediate emergency medical attention."
                     };
                 } else if (symptoms.includes('fever') && symptoms.includes('cough')) {
@@ -780,193 +843,254 @@
                         advice: "Ensure adequate rest and hydration. Over-the-counter remedies may help alleviate mild symptoms."
                     };
                 }
-
-                // Populate DOM with Result
+                
+                // Populate results
                 const urgencyEl = document.getElementById('symptom-urgency');
                 urgencyEl.className = `px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 ${mockResult.badgeClass}`;
                 urgencyEl.innerHTML = mockResult.badgeText;
-
+                
                 const conditionsHtml = mockResult.conditions.map(c => `
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
                         <span class="font-medium text-slate-900">${c.name}</span>
                         <div class="flex items-center gap-3">
-                            <div class="w-24 bg-slate-100 rounded-full h-2">
-                                <div class="h-2 rounded-full ${c.prob > 70 ? 'bg-red-500' : c.prob > 40 ? 'bg-amber-500' : 'bg-blue-500'}" style="width: ${c.prob}%"></div>
+                            <div class="w-24 bg-slate-100 rounded-full h-2" role="progressbar" aria-label="Probability" aria-valuenow="${c.prob}" aria-valuemin="0" aria-valuemax="100">
+                                <div class="h-2 rounded-full w-[var(--progress)] ${c.prob > 70 ? 'bg-red-500' : c.prob > 40 ? 'bg-amber-500' : 'bg-blue-500'}" style="--progress: ${c.prob}%"></div>
                             </div>
                             <span class="text-sm font-semibold text-slate-600 w-8">${c.prob}%</span>
                         </div>
                     </div>
                 `).join('');
-                document.getElementById('symptom-conditions-list').innerHTML = conditionsHtml;
-                document.getElementById('symptom-advice').innerHTML = mockResult.advice;
-
-                // Render dynamic hospitals based on urgency/symptoms
-                let specialties = ["Gen Medicine"];
-                if (mockResult.urgency === 'high') specialties = ["Emergency", "Cardiology"];
-                else if (mockResult.urgency === 'medium') specialties = ["Pulmonology", "Internal Medicine"];
                 
-                renderHospitals(specialties, 'symptom-hospitals', 'Based on your symptoms, we mapped these nearby facilities with the right specialists for your condition:');
-
-                // Toggle visibility
+                document.getElementById('symptom-conditions-list').innerHTML = conditionsHtml;
+                document.getElementById('symptom-advice').textContent = mockResult.advice;
+                
+                // Save symptom log
+                const logs = JSON.parse(localStorage.getItem('healthai_logs') || '[]');
+                logs.unshift({
+                    type: 'symptom',
+                    text: `Symptom analysis: ${symptoms.substring(0, 50)}...`,
+                    date: new Date().toLocaleString()
+                });
+                localStorage.setItem('healthai_logs', JSON.stringify(logs));
+                
+                // Show results
                 document.getElementById('symptom-loading').classList.add('hidden');
                 document.getElementById('symptom-result').classList.remove('hidden');
-
-                // Reset button
-                btn.disabled = false;
-                btn.innerHTML = `<i data-lucide="activity" class="w-5 h-5"></i> Analyze with AI`;
                 lucide.createIcons();
-                
             }, 2000);
-        }
-
-        // ---- Report Analyzer Logic ----
-        function handleRealFileUpload(event) {
-            const fileInput = event.target;
-            if (fileInput.files.length > 0) {
-                const fileName = fileInput.files[0].name;
+        });
+        
+        // Report Analyzer Logic
+        const reportUploadZone = document.getElementById('report-upload');
+        const realFileInput = document.getElementById('real-file-input');
+        const resetReportBtn = document.getElementById('btn-reset-report');
+        
+        reportUploadZone.addEventListener('click', () => realFileInput.click());
+        
+        realFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                document.getElementById('display-filename').textContent = fileName;
+                document.getElementById('result-filename').textContent = fileName;
                 
-                // Update UI to show we are analyzing their actual file
-                document.getElementById('display-filename').innerText = fileName;
-                document.getElementById('result-filename').innerText = fileName;
-
-                // Hide upload, show loading
                 document.getElementById('report-upload').classList.add('hidden');
                 document.getElementById('report-loading').classList.remove('hidden');
-
+                
                 setTimeout(() => {
                     document.getElementById('report-loading').classList.add('hidden');
                     document.getElementById('report-result').classList.remove('hidden');
+                    lucide.createIcons();
                     
-                    // Render dynamic hospitals based on report flags (e.g., High Cholesterol -> Cardiology)
-                    renderHospitals(['Cardiology', 'Gen Medicine'], 'report-hospitals', 'Based on the elevated cholesterol and WBC count found in your report, these nearby hospitals specialize in cardiology and general medicine:');
+                    // Save report log
+                    const logs = JSON.parse(localStorage.getItem('healthai_logs') || '[]');
+                    logs.unshift({
+                        type: 'log',
+                        text: `Uploaded medical report: ${fileName}`,
+                        date: new Date().toLocaleString()
+                    });
+                    localStorage.setItem('healthai_logs', JSON.stringify(logs));
                 }, 2500);
             }
-        }
-
-        function resetReport() {
+        });
+        
+        resetReportBtn.addEventListener('click', () => {
             document.getElementById('report-result').classList.add('hidden');
             document.getElementById('report-upload').classList.remove('hidden');
-            document.getElementById('real-file-input').value = ""; // Clear file input
-        }
-
-        // ---- Activity & Steps Tracking Logic ----
-        function requestActivityPermission() {
-            const btn = document.getElementById('activity-permission-btn');
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Requesting Sensors...`;
+            realFileInput.value = "";
+        });
+        
+        // Activity Tracker Logic
+        const activityPermissionBtn = document.getElementById('activity-permission-btn');
+        const activityPermissionOverlay = document.getElementById('activity-permission-overlay');
+        const activityDashboard = document.getElementById('activity-dashboard');
+        
+        activityPermissionBtn.addEventListener('click', () => {
+            activityPermissionBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin" aria-hidden="true"></i> Requesting Sensors...';
             lucide.createIcons();
-
-            // Try to ask for DeviceOrientation (Works on some mobile browsers, but requires HTTPS)
-            if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-                DeviceMotionEvent.requestPermission()
-                    .then(permissionState => {
-                        // Regardless of true outcome, we show the dashboard mock data
-                        finishActivityLoad();
-                    })
-                    .catch(console.error);
-            } else {
-                // Non-iOS or older browser, just show the dashboard
-                setTimeout(finishActivityLoad, 1500);
-            }
-        }
-
-        function finishActivityLoad() {
-            document.getElementById('activity-permission-overlay').classList.add('hidden');
-            document.getElementById('activity-dashboard').classList.remove('hidden');
-        }
-
-        function setActivityView(period) {
-            // Update button styles
-            document.querySelectorAll('.activity-tab-btn').forEach(btn => {
-                btn.classList.remove('bg-white', 'shadow-sm', 'text-slate-900');
-                btn.classList.add('text-slate-500', 'hover:text-slate-700');
-            });
-            const activeBtn = document.getElementById(`btn-act-${period}`);
-            activeBtn.classList.add('bg-white', 'shadow-sm', 'text-slate-900');
-            activeBtn.classList.remove('text-slate-500', 'hover:text-slate-700');
-
-            // Map simulated data based on requested period
-            const dataMap = {
-                'today': { steps: '8,432', goal: '10,000', distance: '6.2 km', cal: '340 kcal', pct: '84%' },
-                'week': { steps: '54,210', goal: '70,000', distance: '41.5 km', cal: '2,150 kcal', pct: '77%' },
-                'month': { steps: '215,400', goal: '300,000', distance: '165.2 km', cal: '8,400 kcal', pct: '71%' },
-                'year': { steps: '1,245,000', goal: '3,650,000', distance: '950.4 km', cal: '48,500 kcal', pct: '34%' }
-            };
-
-            const data = dataMap[period];
-            document.getElementById('act-steps').innerText = data.steps;
-            document.getElementById('act-goal').innerText = `Goal: ${data.goal}`;
-            document.getElementById('act-distance').innerText = data.distance;
-            document.getElementById('act-cal').innerText = data.cal;
-            document.getElementById('act-progress').style.width = data.pct;
-        }
-
-        // ---- Live Location Hospital Search Logic ----
-        function findHospitalsByLocation() {
-            const btn = document.getElementById('live-location-btn');
-            const statusContainer = document.getElementById('location-status-container');
-            const statusText = document.getElementById('location-status');
-            const resultsContainer = document.getElementById('live-hospitals-results');
             
-            // Switch UI to loading state
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Locating...`;
-            statusContainer.classList.remove('hidden');
-            statusText.innerHTML = "Requesting GPS permissions from your browser...";
+            setTimeout(() => {
+                activityPermissionOverlay.classList.add('hidden');
+                activityDashboard.classList.remove('hidden');
+                lucide.createIcons();
+                
+                // Load activity data when dashboard is shown
+                const healthData = JSON.parse(localStorage.getItem('healthai_health_data') || '{}');
+                userManager.updateActivityData(healthData);
+            }, 1500);
+        });
+        
+        // Activity Period Tabs
+        const activityTabBtns = document.querySelectorAll('.activity-tab-btn');
+        
+        activityTabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const period = btn.dataset.period;
+                
+                // Update button states
+                activityTabBtns.forEach(b => {
+                    b.classList.remove('bg-white', 'shadow-sm', 'text-slate-900');
+                    b.classList.add('text-slate-500', 'hover:text-slate-700');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                
+                btn.classList.add('bg-white', 'shadow-sm', 'text-slate-900');
+                btn.classList.remove('text-slate-500', 'hover:text-slate-700');
+                btn.setAttribute('aria-selected', 'true');
+                
+                // Load data for the selected period
+                loadActivityData(period);
+            });
+        });
+        
+        function loadActivityData(period) {
+            const healthData = JSON.parse(localStorage.getItem('healthai_health_data') || '{}');
+            
+            // Simulate different data based on period
+            const dataMap = {
+                'today': { steps: healthData.steps || 0 },
+                'week': { steps: (healthData.steps || 0) * 7 },
+                'month': { steps: (healthData.steps || 0) * 30 },
+                'year': { steps: (healthData.steps || 0) * 365 }
+            };
+            
+            const data = dataMap[period];
+            const steps = data.steps;
+            const distance = (steps * 0.0007).toFixed(1);
+            const calories = Math.floor(steps * 0.04);
+            
+            document.getElementById('act-steps').textContent = steps.toLocaleString();
+            document.getElementById('act-distance').textContent = `${distance} km`;
+            document.getElementById('act-cal').textContent = `${calories} kcal`;
+            
+            const progress = Math.min((steps / 10000) * 100, 100);
+            document.getElementById('act-progress').style.setProperty('--progress', `${progress}%`);
+        }
+        
+        // Hospital Finder Logic
+        const liveLocationBtn = document.getElementById('live-location-btn');
+        const locationStatusContainer = document.getElementById('location-status-container');
+        const locationStatus = document.getElementById('location-status');
+        const liveHospitalsResults = document.getElementById('live-hospitals-results');
+        const liveHospitalsList = document.getElementById('live-hospitals-list');
+        
+        liveLocationBtn.addEventListener('click', () => {
+            liveLocationBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin" aria-hidden="true"></i> Locating...';
             lucide.createIcons();
-
+            
+            locationStatusContainer.classList.remove('hidden');
+            locationStatus.textContent = "Requesting GPS permissions from your browser...";
+            
             if ("geolocation" in navigator) {
-                // Request live location from device
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const lat = position.coords.latitude.toFixed(4);
                         const lng = position.coords.longitude.toFixed(4);
                         
-                        statusContainer.classList.remove('border-red-200', 'bg-red-50');
-                        statusContainer.classList.add('border-green-200', 'bg-green-50');
-                        statusText.innerHTML = `<strong class="text-green-700">Success!</strong> Location found (Lat: ${lat}, Lng: ${lng}). Searching medical facilities...`;
+                        locationStatusContainer.classList.remove('border-red-200', 'bg-red-50');
+                        locationStatusContainer.classList.add('border-green-200', 'bg-green-50');
+                        locationStatus.innerHTML = `<strong class="text-green-700">Success!</strong> Location found (Lat: ${lat}, Lng: ${lng}). Searching medical facilities...`;
                         
-                        // Simulate API delay for finding hospitals
                         setTimeout(() => {
-                            btn.innerHTML = `<i data-lucide="map-pin" class="w-5 h-5"></i> Update Location`;
-                            statusContainer.classList.add('hidden');
-                            resultsContainer.classList.remove('hidden');
+                            liveLocationBtn.innerHTML = '<i data-lucide="map-pin" class="w-5 h-5" aria-hidden="true"></i> Update Location';
+                            locationStatusContainer.classList.add('hidden');
+                            liveHospitalsResults.classList.remove('hidden');
                             
-                            // Render hospitals
-                            renderHospitals(['Emergency', 'Gen Medicine', 'Cardiology', 'Orthopedics'], 'live-hospitals-list', `Based on your exact live coordinates, here are the top-rated medical facilities near you.`);
+                            // Mock hospital data
+                            const hospitals = [
+                                { name: "Apollo Hospitals", distance: "2.5 km", location: "Jubilee Hills, Hyderabad", specialties: ["Cardiology", "Gen Medicine", "Emergency"] },
+                                { name: "Yashoda Hospitals", distance: "4.1 km", location: "Secunderabad, Hyderabad", specialties: ["Cardiology", "Diagnostics", "Pulmonology"] },
+                                { name: "CARE Hospitals", distance: "5.8 km", location: "Banjara Hills, Hyderabad", specialties: ["Internal Medicine", "Cardiology"] }
+                            ];
+                            
+                            const hospitalsHtml = hospitals.map(h => `
+                                <div class="border border-slate-200 rounded-xl p-4 hover:border-blue-400 hover:shadow-md transition-all bg-white group cursor-pointer">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h4 class="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors">${h.name}</h4>
+                                        <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded">${h.distance}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 mb-3"><i data-lucide="map-pin" class="w-3 h-3 inline mr-1" aria-hidden="true"></i>${h.location}</p>
+                                    <div class="flex gap-2 mb-4 flex-wrap">
+                                        ${h.specialties.map(s => `<span class="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full border border-slate-200">${s}</span>`).join('')}
+                                    </div>
+                                    <button class="w-full text-sm font-medium text-blue-600 border border-blue-200 rounded-lg py-2 hover:bg-blue-600 hover:text-white transition-colors flex justify-center items-center gap-2">
+                                        <i data-lucide="calendar-plus" class="w-4 h-4" aria-hidden="true"></i> Book Appt
+                                    </button>
+                                </div>
+                            `).join('');
+                            
+                            liveHospitalsList.innerHTML = `
+                                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mt-6">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <h4 class="font-bold text-slate-900 flex items-center gap-2">
+                                            <i data-lucide="building-2" class="w-5 h-5 text-red-500" aria-hidden="true"></i> Recommended Facilities Near You
+                                        </h4>
+                                    </div>
+                                    <p class="text-sm text-slate-500 mb-6">Based on your exact live coordinates, here are the top-rated medical facilities near you.</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        ${hospitalsHtml}
+                                    </div>
+                                </div>
+                            `;
+                            
                             lucide.createIcons();
                         }, 1500);
                     },
                     (error) => {
-                        // Detailed error handling for the user
-                        btn.innerHTML = `<i data-lucide="map-pin" class="w-5 h-5"></i> Try Again`;
-                        statusContainer.classList.remove('border-slate-200', 'bg-slate-50', 'border-green-200', 'bg-green-50');
-                        statusContainer.classList.add('border-red-200', 'bg-red-50');
+                        liveLocationBtn.innerHTML = '<i data-lucide="map-pin" class="w-5 h-5" aria-hidden="true"></i> Try Again';
                         
-                        let errorMsg = `<strong class="text-red-700 flex items-center gap-2"><i data-lucide="alert-octagon" class="w-4 h-4"></i> Location Blocked!</strong><br><br>`;
+                        locationStatusContainer.classList.remove('border-slate-200', 'bg-slate-50', 'border-green-200', 'bg-green-50');
+                        locationStatusContainer.classList.add('border-red-200', 'bg-red-50');
                         
-                        // Check if they are running it from their local hard drive (file:// protocol)
+                        let errorMsg = `<strong class="text-red-700 flex items-center gap-2"><i data-lucide="alert-octagon" class="w-4 h-4" aria-hidden="true"></i> Location Blocked!</strong><br><br>`;
+                        
                         if (window.location.protocol === 'file:') {
                             errorMsg += "You are opening this file locally (from your C: drive or phone storage). <strong>Modern browsers block GPS access for local files for security reasons.</strong><br><br><strong>How to fix:</strong> You must host this file online (e.g., using GitHub Pages, Vercel, or Netlify) using a secure 'https://' link.";
-                        } 
-                        else if(error.code === error.PERMISSION_DENIED) {
+                        } else if(error.code === error.PERMISSION_DENIED) {
                             errorMsg += "You clicked 'Deny' when the browser asked for your location. Please check your browser's site settings to allow location access and try again.";
-                        }
-                        else if(error.code === error.POSITION_UNAVAILABLE) {
-                            errorMsg += "Your device's location services are currently unavailable or turned off in your OS settings.";
-                        }
-                        else {
+                        } else {
                             errorMsg += "The request to get user location timed out or failed.";
                         }
-
-                        statusText.innerHTML = errorMsg;
+                        
+                        locationStatus.innerHTML = errorMsg;
                         lucide.createIcons();
-                    },
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                    }
                 );
             } else {
-                statusContainer.classList.add('border-red-200', 'bg-red-50');
-                statusText.innerHTML = `<span class="text-red-700">Geolocation is not supported by your browser.</span>`;
+                locationStatusContainer.classList.add('border-red-200', 'bg-red-50');
+                locationStatus.innerHTML = `<span class="text-red-700">Geolocation is not supported by your browser.</span>`;
             }
-        }
+        });
+        
+        // Initialize chart animations when page loads
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.chart-bar').forEach(bar => {
+                const progress = bar.style.getPropertyValue('--progress');
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = progress;
+                }, 100);
+            });
+        });
     </script>
 </body>
 </html>
